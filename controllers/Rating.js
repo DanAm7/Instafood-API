@@ -2,6 +2,7 @@ const handleRating = (req, res, db) => {
     const { action, email, id } = req.body;
 //////////////////////////////////////////////////////////////////////////////////
 var AlreadyRated = '';
+console.log(id, action,email)
 
 function CreateTable(id) {
   console.log('CreateTable');
