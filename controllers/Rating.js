@@ -5,6 +5,7 @@ const handleRating = async (req, res, db) => {
     const data = await db.select('*').from('feed').where('id', '=', id);
 
     if (!data || !data[0]) {
+      console.error('Invalid ID or data not found.');
       res.status(400).json('Invalid ID or data not found.');
       return;
     }
@@ -16,6 +17,7 @@ const handleRating = async (req, res, db) => {
       const existingEmail = await db(`i${id}`).where('email', '=', email);
 
       if (existingEmail && existingEmail[0]) {
+        console.error('User has already rated.');
         res.status(400).json('Already rated');
       } else {
         await insertEmail(id, email, db);
@@ -29,36 +31,50 @@ const handleRating = async (req, res, db) => {
 };
 
 async function createAndUpdateTable(id, email, db) {
-  await db.schema.createTable(`i${id}`, table => {
-    table.increments();
-    table.string('email');
-  });
+  try {
+    await db.schema.createTable(`i${id}`, table => {
+      table.increments();
+      table.string('email');
+    });
 
-  await db('feed').where('id', '=', id).update({ rated: '1' });
-  await insertEmail(id, email, db);
+    await db('feed').where('id', '=', id).update({ rated: '1' });
+    await insertEmail(id, email, db);
+  } catch (error) {
+    console.error('Error in createAndUpdateTable:', error);
+    throw error;  // Re-throw the error to be caught in the main handler
+  }
 }
 
 async function adjustRating(action, id, db, res) {
-  if (action === 'up') {
-    const rating = await db('feed').where('id', '=', id).increment('rating', 1).returning('rating');
-    res.json(rating[0]);
-  } else if (action === 'down') {
-    const rating = await db('feed').where('id', '=', id).decrement('rating', 1).returning('rating');
-    res.json(rating[0]);
-  } else {
-    res.status(400).json('Invalid action');
+  try {
+    if (action === 'up') {
+      const rating = await db('feed').where('id', '=', id).increment('rating', 1).returning('rating');
+      res.json(rating[0]);
+    } else if (action === 'down') {
+      const rating = await db('feed').where('id', '=', id).decrement('rating', 1).returning('rating');
+      res.json(rating[0]);
+    } else {
+      console.error('Invalid action received:', action);
+      res.status(400).json('Invalid action');
+    }
+  } catch (error) {
+    console.error('Error in adjustRating:', error);
+    throw error;  // Re-throw the error to be caught in the main handler
   }
 }
 
 async function insertEmail(id, email, db) {
-  await db(`i${id}`).insert({ email });
+  try {
+    await db(`i${id}`).insert({ email });
+  } catch (error) {
+    console.error('Error in insertEmail:', error);
+    throw error;  // Re-throw the error to be caught in the main handler
+  }
 }
 
 module.exports = {
   handleRating
 };
-
-
 
 
 
