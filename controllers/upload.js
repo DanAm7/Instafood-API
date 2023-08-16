@@ -19,10 +19,8 @@ const handleUpload = (req, res, db, fs) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////
       const img = req.body.img;
-      console.log(img);
       if (img) {
 
-      console.log('img', img);
 
       db('feed')
       .returning('*')
