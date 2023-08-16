@@ -1,4 +1,5 @@
 const handleRating = (req, res, db) => {
+  console.log(req.body)
     const { action, email, id } = req.body;
 //////////////////////////////////////////////////////////////////////////////////
 var AlreadyRated = '';
@@ -83,7 +84,6 @@ function CreateTable(id) {
 
 
         db(`i${id}`).where('email', '=', email).then(data2 => {
-          console.log(data2[0]);
           if (data2[0]) {
             console.log("!!!!!!!!!!!!!!!!!!!already alerted");
               res.status(400).json('already rated').catch(err => {console.log('check email error')});
