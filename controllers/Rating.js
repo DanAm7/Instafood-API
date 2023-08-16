@@ -1,9 +1,7 @@
 const handleRating = (req, res, db) => {
-  console.log(req.body)
     const { action, email, id } = req.body;
 //////////////////////////////////////////////////////////////////////////////////
 var AlreadyRated = '';
-console.log(id, action,email)
 
 function CreateTable(id) {
   console.log('CreateTable');
@@ -100,7 +98,7 @@ function CreateTable(id) {
         }
       }
 
-        }).catch(err => {console.log('end of secend if error')});
+        });
         
     }
       }).catch(err => {console.log('end of all error')});
