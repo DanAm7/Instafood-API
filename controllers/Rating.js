@@ -77,10 +77,6 @@ function CreateTable(id) {
 ////////////////////////////////////////////////////////////////
       if (data[0].rated === '1') {
 
-
-        console.log('CheckEmail');
-
-
         db(`i${id}`).where('email', '=', email).then(data2 => {
           if (data2[0]) {
             console.log("!!!!!!!!!!!!!!!!!!!already alerted");
@@ -98,7 +94,7 @@ function CreateTable(id) {
         }
       }
 
-        });
+        }).catch(err => {console.log('end of sec err')});
         
     }
       }).catch(err => {console.log('end of all error')});
